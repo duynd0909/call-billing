@@ -2,7 +2,7 @@
 version: "3"
 services:
   postgres:
-    image: postgres:15.1
+    image: postgres:15
     networks:
       - postgres
     volumes:
@@ -13,7 +13,9 @@ services:
       -.env
   call-billing-api:
     image: call-billing-api
-    dockerfile: Dockerfile
+    build:
+     dockerfile: ./Dockerfile
+     context: .
     env_file:
       - .env
     ports:
