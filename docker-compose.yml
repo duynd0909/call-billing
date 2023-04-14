@@ -1,0 +1,28 @@
+
+version: "3"
+services:
+  postgres:
+    image: postgres:15.1
+    networks:
+      - postgres
+    volumes:
+      - /data/postgres:/data/postgres
+    ports:
+      - "8080:80"
+    env_file:
+      -.env
+  call-billing-api:
+    image: call-billing-api
+    dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+ 
+networks:
+  postgres:
+    driver: bridge
