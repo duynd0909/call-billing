@@ -1,30 +1,22 @@
 
-version: "3"
+version: '3.9'
 services:
-  postgres:
-    image: postgres:15
-    networks:
-      - postgres
-    volumes:
-      - /data/postgres:/data/postgres
-    ports:
-      - "8080:80"
-    env_file:
-      -.env
-  call-billing-api:
-    image: call-billing-api
+  app:
     build:
-     dockerfile: ./Dockerfile
-     context: .
-    env_file:
-      - .env
+      context: .
+      dockerfile: ./Dockerfile
     ports:
-      - "3000:3000"
+      - 3000:3000
+    volumes:
+      - ./src:/app/src
     depends_on:
-      - postgres
-    networks:
-      - postgres
- 
-networks:
-  postgres:
-    driver: bridge
+      - db
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
