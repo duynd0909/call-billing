@@ -11,12 +11,12 @@ services:
       - ./src:/app/src
     depends_on:
       - db
+    env_file:
+      - .env.test
   db:
     image: postgres
     restart: always
     ports:
       - 5432:5432
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - .env.test

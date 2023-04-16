@@ -27,10 +27,11 @@ export class MobileService {
     username: string,
     createCallRequest: CreateCallRequest,
   ): Promise<Mobile> {
-    const call = new Mobile();
-    call.username = username;
-    call.duration = createCallRequest.call_duration;
-    return this.mobileRepository.save(call);
+    const mobileCall = new Mobile();
+    mobileCall.username = username;
+    mobileCall.duration = createCallRequest.call_duration;
+    mobileCall.createdAt = new Date();
+    return this.mobileRepository.save(mobileCall);
   }
 
   /**
@@ -41,16 +42,16 @@ export class MobileService {
    */
   public async getBilling(username: string): Promise<BillingResponse> {
     const billingResponse = new BillingResponse();
-    const callList: Mobile[] = await this.mobileRepository.findBy({
+    const mobileCallList: Mobile[] = await this.mobileRepository.findBy({
       username,
     });
-    if (!callList.length) {
+    if (!mobileCallList.length) {
       throw new NoBillingForUserException(
         `${NO_MOBILE_CALL_MESSAGE} ${username}`,
       );
     }
-    billingResponse.callCount = callList.length;
-    billingResponse.blockCount = callList.reduce(
+    billingResponse.callCount = mobileCallList.length;
+    billingResponse.blockCount = mobileCallList.reduce(
       (total, call) => total + Math.ceil(call.duration / BLOCK_DURATION),
       0,
     );
