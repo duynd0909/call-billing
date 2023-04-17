@@ -1,1 +1,1 @@
-export const BLOCK_DURATION = 30;
+export const BLOCK_DURATION = 30000;

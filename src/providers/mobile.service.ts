@@ -3,7 +3,7 @@ import { NoBillingForUserException } from '@/common/exceptions/no-billing-for-us
 import { BLOCK_DURATION } from '@/common/constants/mobile.constant';
 import { BillingResponse } from '@/models/response/billing.response';
 import { CreateCallRequest } from '@/models/request/create-call.request';
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -27,11 +27,15 @@ export class MobileService {
     username: string,
     createCallRequest: CreateCallRequest,
   ): Promise<Mobile> {
-    const mobileCall = new Mobile();
-    mobileCall.username = username;
-    mobileCall.duration = createCallRequest.call_duration;
-    mobileCall.createdAt = new Date();
-    return this.mobileRepository.save(mobileCall);
+    try {
+      const mobileCall = new Mobile();
+      mobileCall.username = username;
+      mobileCall.duration = createCallRequest.call_duration;
+      mobileCall.createdAt = new Date();
+      return this.mobileRepository.save(mobileCall);
+    } catch (error) {
+      throw new BadRequestException();
+    }
   }
 
   /**
